@@ -39,7 +39,7 @@ function UpdateRow(row, estdata, taskId, statistics) {
 	$(row).append(rowHtml);
 }
 
-function UpdateRowHours(row, timedata) {
+function UpdateRowHours(row, timedata, spent) {
 	var hoursData = {};
 	//process hours data
 	$('table.crmclick tbody tr[onclick]', timedata).each(function() {
@@ -88,6 +88,12 @@ function UpdateRowHours(row, timedata) {
 				percentage = 90.0;
 		}
 		miniRow.css('background', 'linear-gradient(to right, rgb(146, 208, 80) ' + percentage + '%, rgb(255, 192, 0) ' + percentage + '%, rgb(255, 192, 0) 100%)');
+		//spent time
+		if (spent[name] == undefined)
+			spent[name] = {};
+		if (spent[name][estimation] == undefined)
+			spent[name][estimation] = 0;
+		spent[name][estimation] += workedHours;
 	});
 	// check for hidden hours
 	var hiddenSum = 0.0;
@@ -117,7 +123,7 @@ function Pad(n) {
     return (n < 10) ? ("0" + n) : n;
 }
 
-function InitTaskListAdjustments(statistics) {	
+function InitTaskListAdjustments(statistics, spent) {	
 	var table = TryGetTargetTable();
 	if (table) {
 		UpdateHeaders(table);
@@ -127,9 +133,10 @@ function InitTaskListAdjustments(statistics) {
 			if (!isNaN(taskId)) {
 				$.get(GetTaskDetailsUrl(taskId), function(estData){
 					UpdateRow(row, estData, taskId, statistics);
-					UpdateListStatistics(statistics);
+					UpdateListStatistics(statistics, spent);
 					$.get(GetTaskTimesheetsUrl(taskId), function(timeData){
-						UpdateRowHours(row, timeData);
+						UpdateRowHours(row, timeData, spent);
+						UpdateListStatistics(statistics, spent);
 					});
 				});
 			}		
@@ -137,7 +144,7 @@ function InitTaskListAdjustments(statistics) {
 	}
 }
 
-function UpdateListStatistics(statistics) {
+function UpdateListStatistics(statistics, spent) {
 	$('table.statistics').remove();
 	$('table.crm').parent().css('position', 'relative');
 	var table = '<table class="statistics">';
@@ -170,6 +177,7 @@ function UpdateListStatistics(statistics) {
 		$(this).addClass('hidden-link');
 		$(window).scrollLeft(1000);
 	});
+	console.debug(spent);
 }
 
 function InitAddTimeAgjustments() {
@@ -437,8 +445,8 @@ function InitExtensionInfo() {
 
 $(document).ready(function() {
 	InitExtensionInfo();
-	var statistics = {};
-	InitTaskListAdjustments(statistics);
+	var statistics = {}, spent = {};
+	InitTaskListAdjustments(statistics, spent);
 	InitAddTimeAgjustments();
 	InitAddEstimationAgjustments();
 	InitTaskNumberTrim();
