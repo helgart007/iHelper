@@ -25,9 +25,10 @@ function UpdateRow(row, data, taskId, statistics) {
 		var hours = parseFloat($('td:nth-child(4)', this).text().replace(',', '.'));
 		rowHtml += '<div' + (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + ' (' + hours + ')</div>';
 		if (statistics[name] == undefined)
-			statistics[name] = hours;
-		else 
-			statistics[name] += hours;
+			statistics[name] = {};
+		if (statistics[name][remark] == undefined)
+			statistics[name][remark] = 0;
+		statistics[name][remark] += hours;
 	});
 	rowHtml += '</td>';
 	$(row).append(rowHtml);
@@ -64,12 +65,34 @@ function UpdateListStatistics(statistics) {
 	$('table.crm').parent().css('position', 'relative');
 	var table = '<table class="statistics">';
 	for (var man in statistics) {
-		var hours = statistics[man];
-		table += '<tr><td>' + man + '<td>' + hours + '</td>' + '</td></tr>';
+		var totalManHours = 0.0;
+		var timeInfoHtml = '';
+		table += '<tr><td>' + man + '</td><td>';
+		for (var work in statistics[man]) {
+			var hours = statistics[man][work];
+			totalManHours += hours;
+			timeInfoHtml += '<tr>' +
+				 '<td>' + work + '</td>' +
+				 '<td>' + hours + '</td>' +
+				 '</tr>';
+		}
+		timeInfoHtml = '<div class="time-info"><table>'
+			+ '<tr class="time-info-total"><td>Total</td><td>' + totalManHours + '</td></tr>' + timeInfoHtml
+			+ '</table></div>';
+		table += '<a href="javascript:void(0)">' + totalManHours + '</a>' + timeInfoHtml + '</td>';
 	}
 	table += '</div>';
 	$('table.crm').parent().append(table);
 	$('table.statistics').css('right', ($('table.statistics').width() + 10) * -1);
+	// shit code style, sorry
+	$('.statistics').on("click", 'a', function(){
+		$('.statistics .hidden-link').removeClass('hidden-link');
+		$('.statistics .time-info').removeClass('time-info-active');
+		$('.time-info', $(this).parent()).addClass('time-info-active');
+		$('table.statistics').css('right', ($('table.statistics').width() + 10) * -1);
+		$(this).addClass('hidden-link');
+		$(window).scrollLeft(1000);
+	});
 }
 
 function InitAddTimeAgjustments() {
@@ -256,16 +279,20 @@ function InitAddTaskAdjustments() {
 		$('#JS_EFID227').val('3. Medium');
 		// project
 		var project = $('#JS_EFID2');
-		project.width(123);
+		project.width(94);
 		project.after(
 			'<input id="projCW" type="button" value="CW" style="margin-left:10px">' + 
-			'<input id="projS" type="button" value="S" style="margin-left:5px">'
+			'<input id="projS" type="button" value="S" style="margin-left:5px">' +
+			'<input id="projT" type="button" value="T" style="margin-left:5px">'
 		);
 		$('#projCW').click(function() {
 			project.val(9);
 		});
 		$('#projS').click(function() {
 			project.val(140);
+		});
+		$('#projT').click(function() {
+			project.val(100);
 		});
 		// one more value
 		$('#JS_EFID5').val(82);

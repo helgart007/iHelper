@@ -22,3 +22,21 @@ table.statistics {
 	position: absolute;
 	top: 32px;
 }
+.statistics .time-info {
+	display: none;
+}
+
+.statistics .time-info-active {
+	display: block;
+	position: block;
+	background-color: #eee;
+	border-radius: 3px;
+}
+
+.statistics .hidden-link {
+	display: none;
+}
+
+.time-info-total {
+	text-decoration: underline;
+}
