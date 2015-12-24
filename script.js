@@ -1,5 +1,5 @@
 function GetTaskDetailsUrl(taskId) {
-	return 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=desc&hiddenfilter[t4-refer][0]=' + taskId;
+	return 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=asc&hiddenfilter[t4-refer][0]=' + taskId;
 }
 
 function TryGetTargetTable() {
