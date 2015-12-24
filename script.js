@@ -36,9 +36,9 @@ function Pad(n) {
     return (n < 10) ? ("0" + n) : n;
 }
 
-$(document).ready(function() {
+function InitTaskListAdjustments() {
 	var table = TryGetTargetTable();
-	if (table)
+	if (table) {
 		UpdateHeaders(table);
 		$('tbody tr', table).each(function() {
 			var row = this;
@@ -49,23 +49,57 @@ $(document).ready(function() {
 				});
 			}		
 		})
-	// add time adjustment
+	}
+}
+
+function InitAddTimeAgjustments() {
 	$(document).on('DOMNodeInserted', '.fancybox-type-iframe iframe', function() {
 		var iframe = $('.fancybox-type-iframe iframe');
 		$(iframe).load(function() {
-			$('#JS_EFID231', iframe.contents()).val(24);
-			$('#JS_EFID229', iframe.contents()).val('Development.');
-			if ($('#JS_EFID233', iframe.contents()))
-				$('input[type="button"][value="Not chargeable"]', iframe.contents()).click();
-			$('#JS_EFID232', iframe.contents()).focus();
-			$('#formfieldcontainer-f230', iframe.contents()).append('<input id="yesterday" type="button" value="Yestarday" style="margin-left:10px">');
-			$('#yesterday', iframe.contents()).click(function() {
-				var dateInput = $('#JS_EFID230', iframe.contents());
-				var date = new Date(DateFormat(dateInput.val()));
-				date.setDate(date.getDate() - 1);
-				dateInput.val(Pad(date.getDate()) + '-' + Pad(date.getMonth() + 1) + '-' + date.getFullYear());
+			if ($('input[value="Delete"]', iframe.contents()).length == 0) {
+				// defaults
+				$('#JS_EFID231', iframe.contents()).val(24);
+				$('#JS_EFID229', iframe.contents()).val('Development.');
+				if ($('#JS_EFID233', iframe.contents()))
+					$('input[type="button"][value="Not chargeable"]', iframe.contents()).click();
 				$('#JS_EFID232', iframe.contents()).focus();
-			});
+				// yesterday
+				$('#formfieldcontainer-f230', iframe.contents()).append('<input id="reportDateP" type="button" value="Yesterday" style="margin-left:10px">');
+				$('#reportDateP', iframe.contents()).click(function() {
+					var dateInput = $('#JS_EFID230', iframe.contents());
+					var date = new Date();
+					date.setDate(date.getDate() - 1);
+					dateInput.val(Pad(date.getDate()) + '-' + Pad(date.getMonth() + 1) + '-' + date.getFullYear());
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+				// management
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportManag" type="button" value="Management" style="margin-left:10px">');
+				$('#reportManag', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(21);
+					$('#JS_EFID229', iframe.contents()).val('Management.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+				// functional designs
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportFuncDes" type="button" value="Functional Designs" style="margin-left:10px">');
+				$('#reportFuncDes', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(24);
+					$('#JS_EFID229', iframe.contents()).val('Functional designs.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+			}
 		});
 	});
+}
+
+function InitTaskNumberTrim() {
+	var input = $('#navigation input.NumericRecordInput');
+	input.closest('form').change(function(){
+		input.val(input.val().replace(/[^0-9]+/, ''));
+	})
+}
+
+$(document).ready(function() {
+	InitTaskListAdjustments();
+	InitAddTimeAgjustments();
+	InitTaskNumberTrim();
 });
