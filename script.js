@@ -15,14 +15,19 @@ function GetAbbreviation(str) {
 	return str.match(/\b([A-Z])/g).join('');
 }
 
-function UpdateRow(row, data, taskId) {
+function UpdateRow(row, data, taskId, statistics) {
 	var rowHtml = '<td class="estimation-cell">';
 	var estimationItems = $('table.crmclick tbody tr[onclick]', data);
 	estimationItems.each(function() {
 		var remark = $('td:nth-child(7)', this).text();
 		var isDone = $('td:nth-child(5)', this).text().length > 0;
 		var name = $('td:nth-child(2)', this).text();
-		rowHtml += '<div' + (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + '</div>';
+		var hours = parseFloat($('td:nth-child(4)', this).text().replace(',', '.'));
+		rowHtml += '<div' + (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + ' (' + hours + ')</div>';
+		if (statistics[name] == undefined)
+			statistics[name] = hours;
+		else 
+			statistics[name] += hours;
 	});
 	rowHtml += '</td>';
 	$(row).append(rowHtml);
@@ -37,7 +42,7 @@ function Pad(n) {
     return (n < 10) ? ("0" + n) : n;
 }
 
-function InitTaskListAdjustments() {
+function InitTaskListAdjustments(statistics) {	
 	var table = TryGetTargetTable();
 	if (table) {
 		UpdateHeaders(table);
@@ -46,11 +51,25 @@ function InitTaskListAdjustments() {
 			var taskId = parseInt($('.recordid', row).text());
 			if (!isNaN(taskId)) {
 				$.get(GetTaskDetailsUrl(taskId), function(data){
-					UpdateRow(row, data, taskId);
+					UpdateRow(row, data, taskId, statistics);
+					UpdateListStatistics(statistics);
 				});
 			}		
 		})
 	}
+}
+
+function UpdateListStatistics(statistics) {
+	$('table.statistics').remove();
+	$('table.crm').parent().css('position', 'relative');
+	var table = '<table class="statistics">';
+	for (var man in statistics) {
+		var hours = statistics[man];
+		table += '<tr><td>' + man + '<td>' + hours + '</td>' + '</td></tr>';
+	}
+	table += '</div>';
+	$('table.crm').parent().append(table);
+	$('table.statistics').css('right', ($('table.statistics').width() + 10) * -1);
 }
 
 function InitAddTimeAgjustments() {
@@ -65,11 +84,17 @@ function InitAddTimeAgjustments() {
 					$('input[type="button"][value="Not chargeable"]', iframe.contents()).click();
 				$('#JS_EFID232', iframe.contents()).focus();
 				// yesterday
-				$('#formfieldcontainer-f230', iframe.contents()).append('<input id="reportDateP" type="button" value="Yesterday" style="margin-left:10px">');
+				var date = new Date(), buttonTitle;
+				if (date.getDay() === 1) {
+					buttonTitle = 'Friday';
+					date.setDate(date.getDate() - 3);
+				} else {
+					buttonTitle = 'Yesterday';
+					date.setDate(date.getDate() - 1);
+				}
+				$('#formfieldcontainer-f230', iframe.contents()).append('<input id="reportDateP" type="button" value="' + buttonTitle + '" style="margin-left:10px">');
 				$('#reportDateP', iframe.contents()).click(function() {
 					var dateInput = $('#JS_EFID230', iframe.contents());
-					var date = new Date();
-					date.setDate(date.getDate() - 1);
 					dateInput.val(Pad(date.getDate()) + '-' + Pad(date.getMonth() + 1) + '-' + date.getFullYear());
 					$('#JS_EFID232', iframe.contents()).focus();
 				});
@@ -92,6 +117,27 @@ function InitAddTimeAgjustments() {
 				$('#reportCodeRev', iframe.contents()).click(function() {
 					$('#JS_EFID231', iframe.contents()).val(24);
 					$('#JS_EFID229', iframe.contents()).val('Code review.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+				// local testing
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportTestLocal" type="button" value="Local Testing" style="margin-left:10px">');
+				$('#reportTestLocal', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(40);
+					$('#JS_EFID229', iframe.contents()).val('Local testing.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+				// sandbox testing
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportTestSand" type="button" value="Sandbox Testing" style="margin-left:10px">');
+				$('#reportTestSand', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(40);
+					$('#JS_EFID229', iframe.contents()).val('Sandbox testing.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+				// live testing
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportTestLive" type="button" value="Live Testing" style="margin-left:10px">');
+				$('#reportTestLive', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(40);
+					$('#JS_EFID229', iframe.contents()).val('Live testing.');
 					$('#JS_EFID232', iframe.contents()).focus();
 				});
 			}
@@ -286,7 +332,8 @@ function InitExtensionInfo() {
 
 $(document).ready(function() {
 	InitExtensionInfo();
-	InitTaskListAdjustments();
+	var statistics = {};
+	InitTaskListAdjustments(statistics);
 	InitAddTimeAgjustments();
 	InitAddEstimationAgjustments();
 	InitTaskNumberTrim();
