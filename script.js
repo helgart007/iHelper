@@ -141,7 +141,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_EFID270', iframe.contents()).val(513);
 					$('#JS_EFID271', iframe.contents()).val('Development');
 					$('#JS_EFID272', iframe.contents()).val(4).focus();
-					$('#JS_EFID275', iframe.contents()).val('Frontend Development.');
+					$('#JS_EFID275', iframe.contents()).val('Frontend development.');
 					$('#JS_EFID276', iframe.contents()).val(20);
 				});
 				
@@ -160,7 +160,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_EFID270', iframe.contents()).val(userId);
 					$('#JS_EFID271', iframe.contents()).val('Code review');
 					$('#JS_EFID272', iframe.contents()).val(2).focus();
-					$('#JS_EFID275', iframe.contents()).val('Code Review.');
+					$('#JS_EFID275', iframe.contents()).val('Code review.');
 					$('#JS_EFID276', iframe.contents()).val(35);
 				});
 				
@@ -169,7 +169,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_EFID270', iframe.contents()).val(551);
 					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
 					$('#JS_EFID272', iframe.contents()).val(2).focus();
-					$('#JS_EFID275', iframe.contents()).val('Local Testing.');
+					$('#JS_EFID275', iframe.contents()).val('Local testing.');
 					$('#JS_EFID276', iframe.contents()).val(40);
 				});
 				
@@ -178,7 +178,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_EFID270', iframe.contents()).val(551);
 					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
 					$('#JS_EFID272', iframe.contents()).val(2).focus();
-					$('#JS_EFID275', iframe.contents()).val('Sandbox Testing.');
+					$('#JS_EFID275', iframe.contents()).val('Sandbox testing.');
 					$('#JS_EFID276', iframe.contents()).val(45);
 				});
 				
@@ -187,7 +187,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_EFID270', iframe.contents()).val(551);
 					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
 					$('#JS_EFID272', iframe.contents()).val(1).focus();
-					$('#JS_EFID275', iframe.contents()).val('Live Testing.');
+					$('#JS_EFID275', iframe.contents()).val('Live testing.');
 					$('#JS_EFID276', iframe.contents()).val(50);
 				});
 			}
