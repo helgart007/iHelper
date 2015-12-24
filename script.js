@@ -1,5 +1,5 @@
 function GetTaskDetailsUrl(taskId) {
-	return 'https://www.flexhelpdesk.nl/login/edit.php?e=' + taskId;
+	return 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=desc&hiddenfilter[t4-refer][0]=' + taskId;
 }
 
 function TryGetTargetTable() {
@@ -17,11 +17,11 @@ function GetAbbreviation(str) {
 
 function UpdateRow(row, data, taskId) {
 	var rowHtml = '<td class="estimation-cell">';
-	var estimationItems = $('#tabs-4 table.crmclick tbody tr[onclick]', data);
+	var estimationItems = $('table.crmclick tbody tr[onclick]', data);
 	estimationItems.each(function() {
-		var remark = $('td:nth-child(8)', this).text();
-		var isDone = $('td:nth-child(6)', this).text().length > 0;
-		var name = $('td:nth-child(3)', this).text();
+		var remark = $('td:nth-child(7)', this).text();
+		var isDone = $('td:nth-child(5)', this).text().length > 0;
+		var name = $('td:nth-child(2)', this).text();
 		rowHtml += '<div' + (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + '</div>';
 	});
 	rowHtml += '</td>';
