@@ -2,6 +2,10 @@ function GetTaskDetailsUrl(taskId) {
 	return 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=asc&hiddenfilter[t4-refer][0]=' + taskId;
 }
 
+function GetTaskTimesheetsUrl(taskId) {
+	return 'https://www.flexhelpdesk.nl/login/list.php?table=t1&sortby=t1-recordid&sortdirection=desc&hiddenfilter[t1-refer][0]=' + taskId;
+}
+
 function TryGetTargetTable() {
 	if ($('#EditEntity').length === 0)
 		return $('table.crmclick')[0];
@@ -15,15 +19,16 @@ function GetAbbreviation(str) {
 	return str.match(/\b([A-Z])/g).join('');
 }
 
-function UpdateRow(row, data, taskId, statistics) {
+function UpdateRow(row, estdata, taskId, statistics) {
 	var rowHtml = '<td class="estimation-cell">';
-	var estimationItems = $('table.crmclick tbody tr[onclick]', data);
+	var estimationItems = $('table.crmclick tbody tr[onclick]', estdata);
 	estimationItems.each(function() {
 		var remark = $('td:nth-child(7)', this).text();
 		var isDone = $('td:nth-child(5)', this).text().length > 0;
 		var name = $('td:nth-child(2)', this).text();
 		var hours = parseFloat($('td:nth-child(4)', this).text().replace(',', '.'));
-		rowHtml += '<div' + (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + ' (' + hours + ')</div>';
+		rowHtml += '<div ' + 'data-name="' + name + '" ' + 'data-estimation="' + remark + '" ' + 'data-hours="' + hours + '" '
+			+ (isDone ? ' class="done"' : '') + '>' + GetAbbreviation(name) + ': ' + remark + ' (' + hours + ')</div>';
 		if (statistics[name] == undefined)
 			statistics[name] = {};
 		if (statistics[name][remark] == undefined)
@@ -32,6 +37,75 @@ function UpdateRow(row, data, taskId, statistics) {
 	});
 	rowHtml += '</td>';
 	$(row).append(rowHtml);
+}
+
+function UpdateRowHours(row, timedata) {
+	var hoursData = {};
+	//process hours data
+	$('table.crmclick tbody tr[onclick]', timedata).each(function() {
+		var name = $('td:nth-child(4)', this).text();
+		var estimation = $('td:nth-child(6)', this).text().toLowerCase();
+		var estPointIndex = estimation.indexOf('.'); 
+		if (estPointIndex != -1)
+			estimation = estimation.substring(0, estPointIndex);
+		var hours = parseFloat($('td:nth-child(7)', this).text().replace(',', '.'));
+		if (hoursData[name] == undefined)
+			hoursData[name] = {}; 
+		if (hoursData[name][estimation] == undefined)
+			hoursData[name][estimation] = 0.0;
+		hoursData[name][estimation] += hours;
+	});
+	//display info
+	$('td.estimation-cell div', row).each(function() {
+		var miniRow = $(this);
+		var name = miniRow.data('name');
+		var estimation = miniRow.data('estimation');
+		var estimationKey = estimation.toLowerCase();
+		var estPointIndex = estimationKey.indexOf('.'); 
+		if (estPointIndex != -1)
+			estimationKey = estimationKey.substring(0, estPointIndex);
+		var hours = miniRow.data('hours');
+		var workedHours = 0.0;
+		if (hoursData[name] != undefined && hoursData[name][estimationKey] != undefined) {
+			workedHours = hoursData[name][estimationKey];
+			delete hoursData[name][estimationKey];
+		}
+		miniRow.html('<span>' + GetAbbreviation(name) + ': ' + estimation + ' (' + workedHours + '/' + hours + ')</span>');
+		// calculate and show progress
+		var percentage = 100.0;
+		var isDone = miniRow.hasClass('done');
+		if (!isDone) {
+			if (hours > 0) {
+				percentage = workedHours / hours * 100;
+			} else {
+				percentage = 0.0;
+			}
+		}
+		percentage = Math.round(percentage);
+		if (!isDone) {
+			miniRow.append('<div class="estimation-cell-percentage' + (percentage >= 100 ? ' warning' : '') + '">' + percentage + '%</div>');
+			if (percentage > 90.0)
+				percentage = 90.0;
+		}
+		miniRow.css('background', 'linear-gradient(to right, rgb(146, 208, 80) ' + percentage + '%, rgb(255, 192, 0) ' + percentage + '%, rgb(255, 192, 0) 100%)');
+	});
+	// check for hidden hours
+	var hiddenSum = 0.0;
+	var warningHtml = '';
+	for (var key in hoursData) {
+		if (hoursData.hasOwnProperty(key)) {
+			var obj = hoursData[key];
+			for (var prop in obj) {
+				if (obj.hasOwnProperty(prop)) {
+					warningHtml += '<div class="warning">' + GetAbbreviation(key) + ': ' + prop + " = " + obj[prop] + '</div>';
+					hiddenSum += obj[prop];
+				}
+			}
+		}
+	}	
+	if (hiddenSum > 0) {
+		$('.estimation-cell', row).append('<div class="warning">WARNING! ' + hiddenSum + ' hidden hours found!</div>' + warningHtml);
+	}	
 }
 
 function DateFormat(date) {
@@ -51,9 +125,12 @@ function InitTaskListAdjustments(statistics) {
 			var row = this;
 			var taskId = parseInt($('.recordid', row).text());
 			if (!isNaN(taskId)) {
-				$.get(GetTaskDetailsUrl(taskId), function(data){
-					UpdateRow(row, data, taskId, statistics);
+				$.get(GetTaskDetailsUrl(taskId), function(estData){
+					UpdateRow(row, estData, taskId, statistics);
 					UpdateListStatistics(statistics);
+					$.get(GetTaskTimesheetsUrl(taskId), function(timeData){
+						UpdateRowHours(row, timeData);
+					});
 				});
 			}		
 		})

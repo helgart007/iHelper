@@ -40,3 +40,14 @@ table.statistics {
 .time-info-total {
 	text-decoration: underline;
 }
+
+.estimation-cell-percentage {
+	float: right;
+}
+
+.warning {
+	color: red;
+}
+.estimation-cell {
+	white-space: nowrap;
+}
