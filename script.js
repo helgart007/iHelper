@@ -351,6 +351,7 @@ function InitTaskNumberTrim() {
 function InitAddTaskAdjustments() {
 	if ($('#navigation a.active[href="edit.php?e=_new_"]').length === 1) {
 		// left values
+		$('#JS_customer').val(577);
 		$('#JS_status').val('2. Toegewezen');
 		$('#JS_EFID237').val('3 Wijziging');
 		$('#JS_EFID227').val('3. Medium');
