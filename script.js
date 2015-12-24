@@ -29,7 +29,8 @@ function UpdateRow(row, data, taskId) {
 }
 
 function DateFormat(date) {
-	return date.substr(3,3) + date.substr(0,3) + date.substr(6)
+	if (date != null)
+		return date.substr(3,3) + date.substr(0,3) + date.substr(6)
 }
 
 function Pad(n) {
@@ -56,7 +57,7 @@ function InitAddTimeAgjustments() {
 	$(document).on('DOMNodeInserted', '.fancybox-type-iframe iframe', function() {
 		var iframe = $('.fancybox-type-iframe iframe');
 		$(iframe).load(function() {
-			if ($('input[value="Delete"]', iframe.contents()).length == 0) {
+			if ($('#JS_EFID229', iframe.contents()).length === 1 && $('input[value="Delete"]', iframe.contents()).length === 0) {
 				// defaults
 				$('#JS_EFID231', iframe.contents()).val(24);
 				$('#JS_EFID229', iframe.contents()).val('Development.');
@@ -86,6 +87,109 @@ function InitAddTimeAgjustments() {
 					$('#JS_EFID229', iframe.contents()).val('Functional designs.');
 					$('#JS_EFID232', iframe.contents()).focus();
 				});
+				// code review
+				$('#formfieldcontainer-f231', iframe.contents()).append('<input id="reportCodeRev" type="button" value="Code Review" style="margin-left:10px">');
+				$('#reportCodeRev', iframe.contents()).click(function() {
+					$('#JS_EFID231', iframe.contents()).val(24);
+					$('#JS_EFID229', iframe.contents()).val('Code review.');
+					$('#JS_EFID232', iframe.contents()).focus();
+				});
+			}
+		});
+	});
+}
+
+function InitAddEstimationAgjustments() {
+	$(document).on('DOMNodeInserted', '.fancybox-type-iframe iframe', function() {
+		var iframe = $('.fancybox-type-iframe iframe');
+		$(iframe).load(function() {
+			if ($('#JS_EFID270', iframe.contents()).length === 1 && $('input[value="Delete"]', iframe.contents()).length === 0) {
+				var userId = $('#JS_EFID270', iframe.contents()).val();
+				
+				$('#formfieldcontainer-f270', iframe.contents()).append(
+					'<div>' +
+						'<input id="estFuncDes" type="button" value="Functional Designs" style="margin-right:5px">' +
+						'<input id="estUIDes" type="button" value="UI Designs" style="margin-right:5px">' +
+						'<input id="estFrDev" type="button" value="Frontend Development" style="margin-right:5px">' +
+						'<input id="estDev" type="button" value="Development" style="margin-right:5px">' +
+						'<input id="estCodeRev" type="button" value="Code Review" style="margin-right:5px">' +
+						'<input id="estLocTest" type="button" value="Local Testing" style="margin-right:5px">' +
+						'<input id="estSandTest" type="button" value="Sandbox Testing" style="margin-right:5px">' +
+						'<input id="estLiveTest" type="button" value="Live Testing" style="margin-right:5px">' +
+					'</div>'
+				);
+				// functional designs				
+				$('#estFuncDes', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(userId);
+					$('#JS_EFID271', iframe.contents()).val('Functional design');
+					$('#JS_EFID272', iframe.contents()).val(2).focus();
+					$('#JS_EFID275', iframe.contents()).val('Functional designs.');
+					$('#JS_EFID276', iframe.contents()).val(10);
+				});
+				
+				// ui designs
+				$('#estUIDes', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(589);
+					$('#JS_EFID271', iframe.contents()).val('Functional design');
+					$('#JS_EFID272', iframe.contents()).val(8).focus();
+					$('#JS_EFID275', iframe.contents()).val('UI designs.');
+					$('#JS_EFID276', iframe.contents()).val(15);
+				});
+				
+				// frontend development
+				$('#estFrDev', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(513);
+					$('#JS_EFID271', iframe.contents()).val('Development');
+					$('#JS_EFID272', iframe.contents()).val(4).focus();
+					$('#JS_EFID275', iframe.contents()).val('Frontend Development.');
+					$('#JS_EFID276', iframe.contents()).val(20);
+				});
+				
+				// development
+				$('#estDev', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(userId).focus();
+					//$('#formfieldcontainer-f270 input.search_input', iframe.contents()).focus();
+					$('#JS_EFID271', iframe.contents()).val('Development');
+					$('#JS_EFID272', iframe.contents()).val(24);
+					$('#JS_EFID275', iframe.contents()).val('Development.');
+					$('#JS_EFID276', iframe.contents()).val(30);
+				});
+				
+				// code review
+				$('#estCodeRev', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(userId);
+					$('#JS_EFID271', iframe.contents()).val('Code review');
+					$('#JS_EFID272', iframe.contents()).val(2).focus();
+					$('#JS_EFID275', iframe.contents()).val('Code Review.');
+					$('#JS_EFID276', iframe.contents()).val(35);
+				});
+				
+				// local testing
+				$('#estLocTest', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(551);
+					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
+					$('#JS_EFID272', iframe.contents()).val(2).focus();
+					$('#JS_EFID275', iframe.contents()).val('Local Testing.');
+					$('#JS_EFID276', iframe.contents()).val(40);
+				});
+				
+				// sandbox testing
+				$('#estSandTest', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(551);
+					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
+					$('#JS_EFID272', iframe.contents()).val(2).focus();
+					$('#JS_EFID275', iframe.contents()).val('Sandbox Testing.');
+					$('#JS_EFID276', iframe.contents()).val(45);
+				});
+				
+				// live testing
+				$('#estLiveTest', iframe.contents()).click(function() {
+					$('#JS_EFID270', iframe.contents()).val(551);
+					$('#JS_EFID271', iframe.contents()).val('Acceptance test');
+					$('#JS_EFID272', iframe.contents()).val(1).focus();
+					$('#JS_EFID275', iframe.contents()).val('Live Testing.');
+					$('#JS_EFID276', iframe.contents()).val(50);
+				});
 			}
 		});
 	});
@@ -98,8 +202,93 @@ function InitTaskNumberTrim() {
 	})
 }
 
+function InitAddTaskAdjustments() {
+	if ($('#navigation a.active[href="edit.php?e=_new_"]').length === 1) {
+		// left values
+		$('#JS_status').val('2. Toegewezen');
+		$('#JS_EFID237').val('3 Wijziging');
+		$('#JS_EFID227').val('3. Medium');
+		// project
+		var project = $('#JS_EFID2');
+		project.width(123);
+		project.after(
+			'<input id="projCW" type="button" value="CW" style="margin-left:10px">' + 
+			'<input id="projS" type="button" value="S" style="margin-left:5px">'
+		);
+		$('#projCW').click(function() {
+			project.val(9);
+		});
+		$('#projS').click(function() {
+			project.val(140);
+		});
+		// one more value
+		$('#JS_EFID5').val(82);
+		// define scripts
+		var devDate, testDate, liveDate, devValue, testValue, liveValue;
+		var currentDate = new Date();
+		$('#JS_EFID4 option').each(function(){			
+			var tDate = $(this).text().match(/T \d{2}-\d{2}-\d{2}/);
+			if (tDate != null)
+				tDate = new Date(DateFormat(tDate.toString().slice(2)));
+			var lDate = $(this).text().match(/L \d{2}-\d{2}-\d{2}/);
+			if (lDate != null)
+				lDate = new Date(DateFormat(lDate.toString().slice(2)));
+			if (tDate != null && lDate != null) {
+				if (tDate > currentDate && (devDate == null || tDate < devDate)) {
+					devDate = tDate;
+					devValue = this; 
+				}
+				if (tDate < currentDate && (testDate == null || tDate > testDate)) {
+					testDate = tDate;
+					testValue = this; 
+				}
+				if (lDate < currentDate && (liveDate == null || lDate > liveDate)) {
+					liveDate = tDate;
+					liveValue = this; 
+				}
+			}
+		});
+		// console.debug('DEV : ' + $(devValue).text());
+		// console.debug('TEST: ' + $(testValue).text());
+		// console.debug('LIVE: ' + $(liveValue).text());		
+		// sprints
+		var sprint = $('#JS_EFID4');
+		sprint.parent().after(
+			'<div class="newtask-sprints">' +
+			'<input id="spDev" type="button" value="Dev">' +
+			'<input id="spTest" type="button" value="Test">' +
+			'<input id="spLive" type="button" value="Live">' +
+			'<input id="spBacklog" type="button" value="Backlog">' +
+			'</div>'
+		);
+		$('#spLive').click(function() {
+			sprint.val($(liveValue).val());
+		});
+		$('#spTest').click(function() {
+			sprint.val($(testValue).val());
+		});
+		$('#spDev').click(function() {
+			sprint.val($(devValue).val());
+		});
+		$('#spBacklog').click(function() {
+			sprint.val(130);
+		});
+		//project
+		$('#JS_EFID3').val(53);
+	}
+}
+
+function InitExtensionInfo() {
+	$('#navigation nav ul').append('<li class="ihelper-versioninfo"><a target="_blank" href="https://chrome.google.com/webstore/detail/ihelper/egolnaplkencbhiljfedeppleoljegdg">'
+		+ 'iH ' + chrome.runtime.getManifest().version +
+	'</a></li>');
+}
+
 $(document).ready(function() {
+	InitExtensionInfo();
 	InitTaskListAdjustments();
 	InitAddTimeAgjustments();
+	InitAddEstimationAgjustments();
 	InitTaskNumberTrim();
+	InitAddTaskAdjustments();
 });
