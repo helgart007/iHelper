@@ -6,6 +6,7 @@ This project is created in no time conditions, with test approach "fast result, 
 
 Version history:
 =
+* 0.8   moved extension info to chrome page icon, added new years mood
 * 0.7.5 fixed issues caused by interleave update, other fixes
 * 0.7.1 task creation changes
 * 0.7   added reported hours info and warnings, progress visualization
