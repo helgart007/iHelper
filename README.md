@@ -1,5 +1,5 @@
 iHelper - FlexService Interleave Helper
-
+=
 We all love our interleave so much... especially I. So this is an extension to make life better with Interleave.
 
 This project is created in no time conditions, with test approach "fast result, no code quality". So don't be afraid of code quality. It was designed "to be bad" originally. Maybe I will find time to refactor all this later.
