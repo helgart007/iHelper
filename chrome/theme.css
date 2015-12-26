@@ -14,10 +14,6 @@
 	margin-left: 5px;
 }
 
-.ihelper-versioninfo a {
-	font-size: 10px;
-    font-family: Calibri;
-}
 table.statistics {
 	position: absolute;
 	top: 32px;
@@ -50,4 +46,14 @@ table.statistics {
 }
 .estimation-cell {
 	white-space: nowrap;
+}
+#christmas-hat {
+	height: 38px;
+	width: 40px;
+	background-image: url('chrome-extension://__MSG_@@extension_id__/images/christmas_hat.png');
+	background-size: 40px;
+	position: absolute;
+	left: 25px;
+	top: -17px;
+	display: none;
 }

@@ -20,7 +20,16 @@ function GetAbbreviation(str) {
 }
 
 function FormattedFloat(f) {
-    return parseFloat(f.toFixed(2));
+	return parseFloat(f.toFixed(2));
+}
+
+function GetDaysToNewYear() {
+	var now = new Date(), year = now.getFullYear();
+	var totalDays = year % 4 == 0 ? 366 : 365
+	var diff = now - new Date(year, 0, 0);
+	var oneDay = 1000 * 60 * 60 * 24;
+	var day = Math.floor(diff / oneDay);
+	return Math.abs(totalDays - day);
 }
 
 function UpdateRow(row, estdata, taskId, statistics) {
@@ -443,14 +452,23 @@ function InitAddTaskAdjustments() {
 	}
 }
 
-function InitExtensionInfo() {
-	$('#navigation nav ul').append('<li class="ihelper-versioninfo"><a target="_blank" href="https://chrome.google.com/webstore/detail/ihelper/egolnaplkencbhiljfedeppleoljegdg">'
-		+ 'iH ' + chrome.runtime.getManifest().version +
-	'</a></li>');
+function InitPageAction() {
+	chrome.runtime.sendMessage({action: "showIcon"}, function(response) {});
+}
+
+function InitChristmas() {
+	var daysToNewYear = GetDaysToNewYear();
+	if (daysToNewYear <= 14) {
+		$("#navigation li.empty")
+			.css("position", "relative")
+			.append("<div id='christmas-hat'></div>");
+		$("#christmas-hat").fadeIn(500);
+	}
 }
 
 $(document).ready(function() {
-	InitExtensionInfo();
+	InitPageAction();
+	InitChristmas();
 	var statistics = {};
 	InitTaskListAdjustments(statistics);
 	InitAddTimeAgjustments();

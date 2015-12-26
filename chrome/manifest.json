@@ -1,10 +1,11 @@
 {
-  "name": "iHelper",
-  "description": "FlexService interleave helper.",
-  "version": "0.7.5",
   "manifest_version": 2,
+  "name": "iHelper",
+  "version": "0.8",
+  "author": "Oleg Makaruk",
+  "description": "FlexService interleave helper.",
   "icons": {
-     "128": "icon_128.png"
+     "128": "images/icon_128.png"
   },
   "content_scripts": [
     {
@@ -12,5 +13,18 @@
 	  "css": ["theme.css"],
       "js": ["jquery.min.js", "script.js"]
     }
+  ],
+  "page_action": {
+      "default_icon": {
+          "19": "images/icon_19.png",
+          "38": "images/icon_38.png"
+      }
+  },
+  "background": {
+      "scripts": ["events.js"],
+      "persistent": false
+  },
+  "web_accessible_resources": [
+      "images/*.png"
   ]
 }
