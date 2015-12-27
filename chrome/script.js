@@ -7,7 +7,7 @@ function GetTaskTimesheetsUrl(taskId) {
 }
 
 function TryGetTargetTable() {
-	if ($('#EditEntity').length === 0)
+	if ($('#JS_submitbutton').length === 0)
 		return $('table.crmclick')[0];
 }
 
@@ -192,12 +192,6 @@ function InitAddTimeAgjustments() {
 		var iframe = $('.fancybox-type-iframe iframe');
 		$(iframe).load(function() {
 			if ($('#JS_t1-f229-_new_', iframe.contents()).length === 1 && $('input[value="Delete"]', iframe.contents()).length === 0) {
-				// defaults
-				$('#JS_t1-f231-_new_', iframe.contents()).val(24);
-				$('#JS_t1-f229-_new_', iframe.contents()).val('Development.');
-				if ($('#JS_t1-f233-_new_', iframe.contents()))
-					$('input[type="button"][value="Not chargeable"]', iframe.contents()).click();
-				$('#JS_t1-f232-_new_', iframe.contents()).focus();
 				// yesterday
 				var date = new Date(), buttonTitle;
 				if (date.getDay() === 1) {
@@ -213,47 +207,47 @@ function InitAddTimeAgjustments() {
 					dateInput.val(Pad(date.getDate()) + '-' + Pad(date.getMonth() + 1) + '-' + date.getFullYear());
 					$('#JS_t1-f232-_new_', iframe.contents()).focus();
 				});
-				// management
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportManag" type="button" value="Management" style="margin-left:10px">');
-				$('#reportManag', iframe.contents()).click(function() {
-					$('#JS_t1-f231-_new_', iframe.contents()).val(21);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Management.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
-				});
-				// functional designs
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportFuncDes" type="button" value="Functional Designs" style="margin-left:10px">');
-				$('#reportFuncDes', iframe.contents()).click(function() {
+				// get estimations
+				var userName = $('#navigation li:last-child a[href="index.php?logout=1"]').text().replace("Logout", "").trim();
+				var taskId = parseInt($('#ffc-t1-refer a.toparentrefer', iframe.contents()).text());
+				$.get(GetTaskDetailsUrl(taskId), function(estData){
+					var estCount = 0;
+					var estimationItems = $('table.crmclick tbody tr[onclick]', estData);
+					estimationItems.each(function() {
+						var name = $('td:nth-child(2)', this).text();
+						if (name === userName) {
+							estCount += 1;
+							var id = $('td:nth-child(1)', this).text();
+							var remark = $('td:nth-child(7)', this).text();
+							var isDone = $('td:nth-child(5)', this).text().length > 0;
+							var hours = parseFloat($('td:nth-child(4)', this).text().replace(',', '.'));
+							$('#ffc-t1-f231', iframe.contents()).append('<input id="est' + id + '"class="est-button" type="button" value="' + remark + '" style="margin-left:10px">');
+							$('#est' + id, iframe.contents()).click(function() {
+								var code = 24;
+								if (remark.toLowerCase().indexOf("management") === 0) {
+									code = 21;
+								} else if (remark.toLowerCase().indexOf("local testing") === 0
+									|| remark.toLowerCase().indexOf("sandbox testing") === 0
+									|| remark.toLowerCase().indexOf("live testing") === 0) {
+									code = 40;
+								}
+								$('#JS_t1-f231-_new_', iframe.contents()).val(code);
+								if(userName === "Oleg Makaruk" && remark === "Management.")
+									remark = "Management. Answering mails, managing tasks, meetings, planing, management activities, discussions.";
+								$('#JS_t1-f229-_new_', iframe.contents()).val(remark);
+								$('#JS_t1-f232-_new_', iframe.contents()).focus();
+							})
+						}
+					});
+					// defaults
 					$('#JS_t1-f231-_new_', iframe.contents()).val(24);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Functional designs.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
-				});
-				// code review
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportCodeRev" type="button" value="Code Review" style="margin-left:10px">');
-				$('#reportCodeRev', iframe.contents()).click(function() {
-					$('#JS_t1-f231-_new_', iframe.contents()).val(24);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Code review.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
-				});
-				// local testing
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportTestLocal" type="button" value="Local Testing" style="margin-left:10px">');
-				$('#reportTestLocal', iframe.contents()).click(function() {
-					$('#JS_t1-f231-_new_', iframe.contents()).val(40);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Local testing.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
-				});
-				// sandbox testing
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportTestSand" type="button" value="Sandbox Testing" style="margin-left:10px">');
-				$('#reportTestSand', iframe.contents()).click(function() {
-					$('#JS_t1-f231-_new_', iframe.contents()).val(40);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Sandbox testing.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
-				});
-				// live testing
-				$('#ffc-t1-f231', iframe.contents()).append('<input id="reportTestLive" type="button" value="Live Testing" style="margin-left:10px">');
-				$('#reportTestLive', iframe.contents()).click(function() {
-					$('#JS_t1-f231-_new_', iframe.contents()).val(40);
-					$('#JS_t1-f229-_new_', iframe.contents()).val('Live testing.');
-					$('#JS_t1-f232-_new_', iframe.contents()).focus();
+					if ($('#JS_t1-f233-_new_', iframe.contents()))
+						$('input[type="button"][value="Not chargeable"]', iframe.contents()).click();
+					if (estCount === 0) {
+						$('#ffc-t1-f231', iframe.contents()).append("<div style='color:red;font-size:20px'>You have no estimation for this issue!</div><div style='font-size:15px'>Your present from Santa is at risk. Consider adding estimation on \"Estimations and progress\" tab.</div>");
+					} else {
+						$('input.est-button', iframe.contents())[0].click();
+					}
 				});
 			}
 		});
