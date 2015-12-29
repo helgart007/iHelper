@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "iHelper",
-  "version": "0.9",
+  "version": "0.9.1",
   "author": "Oleg Makaruk",
   "description": "FlexService interleave helper.",
   "icons": {

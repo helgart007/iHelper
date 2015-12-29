@@ -214,7 +214,7 @@ function InitAddTimeAgjustments() {
 					var estCount = 0;
 					var estimationItems = $('table.crmclick tbody tr[onclick]', estData);
 					estimationItems.each(function() {
-						var name = $('td:nth-child(2)', this).text();
+						var name = $('td:nth-child(2)', this).text().trim();
 						if (name === userName) {
 							estCount += 1;
 							var id = $('td:nth-child(1)', this).text();

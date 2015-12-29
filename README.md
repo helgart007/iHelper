@@ -6,6 +6,7 @@ This project is created in no time conditions, with test approach "fast result, 
 
 Version history:
 =
+* 0.9.1 fixed add timesheet bug
 * 0.9   add timesheet helper now considers personal estimations, fixed critical performance issue caused by interleave update
 * 0.8   moved extension info to chrome page icon, added new years mood
 * 0.7.5 fixed issues caused by interleave update, other fixes
