@@ -29,7 +29,10 @@ function GetDaysToNewYear() {
 	var diff = now - new Date(year, 0, 0);
 	var oneDay = 1000 * 60 * 60 * 24;
 	var day = Math.floor(diff / oneDay);
-	return Math.abs(totalDays - day);
+    var result = day;
+    if (day > totalDays / 2)
+        result = Math.abs(totalDays - day); 
+	return result;
 }
 
 function UpdateRow(row, estdata, taskId, statistics) {
