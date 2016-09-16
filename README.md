@@ -6,6 +6,7 @@ This project is created in no time conditions, with test approach "fast result, 
 
 Version history:
 =
+* 0.9.3 default employee change for some estimations
 * 0.9.2 fixed new years mood
 * 0.9.1 fixed add timesheet bug
 * 0.9   add timesheet helper now considers personal estimations, fixed critical performance issue caused by interleave update

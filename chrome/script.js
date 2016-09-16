@@ -287,7 +287,7 @@ function InitAddEstimationAgjustments() {
 				
 				// ui designs
 				$('#estUIDes', iframe.contents()).click(function() {
-					$('#JS_t4-f270-_new_', iframe.contents()).val(589);
+					$('#JS_t4-f270-_new_', iframe.contents()).val(941);
 					$('#JS_t4-f271-_new_', iframe.contents()).val('Functional design');
 					$('#JS_t4-f272-_new_', iframe.contents()).val(8).focus();
 					$('#JS_t4-f275-_new_', iframe.contents()).val('UI designs.');
@@ -324,7 +324,7 @@ function InitAddEstimationAgjustments() {
 				
 				// local testing
 				$('#estLocTest', iframe.contents()).click(function() {
-					$('#JS_t4-f270-_new_', iframe.contents()).val(551);
+					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
 					$('#JS_t4-f271-_new_', iframe.contents()).val('Acceptance test');
 					$('#JS_t4-f272-_new_', iframe.contents()).val(2).focus();
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Local testing.');
@@ -333,7 +333,7 @@ function InitAddEstimationAgjustments() {
 				
 				// sandbox testing
 				$('#estSandTest', iframe.contents()).click(function() {
-					$('#JS_t4-f270-_new_', iframe.contents()).val(551);
+					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
 					$('#JS_t4-f271-_new_', iframe.contents()).val('Acceptance test');
 					$('#JS_t4-f272-_new_', iframe.contents()).val(2).focus();
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Sandbox testing.');
@@ -342,7 +342,7 @@ function InitAddEstimationAgjustments() {
 				
 				// live testing
 				$('#estLiveTest', iframe.contents()).click(function() {
-					$('#JS_t4-f270-_new_', iframe.contents()).val(551);
+					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
 					$('#JS_t4-f271-_new_', iframe.contents()).val('Acceptance test');
 					$('#JS_t4-f272-_new_', iframe.contents()).val(1).focus();
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Live testing.');
