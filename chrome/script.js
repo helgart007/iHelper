@@ -472,7 +472,7 @@ function InitChristmas() {
 	}
 }
 
-var isIHelperDebugMode = true;
+var isIHelperDebugMode = false;
 
 $(document).ready(function() {
 	InitPageAction();
