@@ -6,12 +6,12 @@
 	background-color: rgb(146, 208, 80);
 }
 
-.newtask-sprints {
-	position: relative;
-	right: -13px;
-}
-.newtask-sprints input {
+.mod-button {
 	margin-left: 5px;
+}
+
+.spr-button {
+	margin: 5px 5px 0 0;
 }
 
 table.statistics {

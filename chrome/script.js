@@ -1,9 +1,15 @@
-function GetTaskDetailsUrl(taskId) {
-	return 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=asc&hiddenfilter[t4-refer][0]=' + taskId;
+function GetTaskEstimationsUrl(taskId) {
+	var url = 'https://www.flexhelpdesk.nl/login/list.php?table=t4&sortby=t4-f276&sortdirection=asc&BYAJAX=1&perpage=200&hiddenfilter[t4-f485][0]=' + taskId;
+	if (isIHelperDebugMode === true)
+		console.debug("Accessing " + url);
+	return url;
 }
 
 function GetTaskTimesheetsUrl(taskId) {
-	return 'https://www.flexhelpdesk.nl/login/list.php?table=t1&sortby=t1-recordid&sortdirection=desc&hiddenfilter[t1-refer][0]=' + taskId;
+	var url = 'https://www.flexhelpdesk.nl/login/list.php?table=t1&sortby=t1-recordid&sortdirection=desc&BYAJAX=1&perpage=200&hiddenfilter[t1-f484][0]=' + taskId;
+	if (isIHelperDebugMode === true)
+		console.debug("Accessing " + url);
+	return url;
 }
 
 function TryGetTargetTable() {
@@ -143,7 +149,7 @@ function InitTaskListAdjustments(statistics) {
 			var row = this;
 			var taskId = parseInt($('.recordid', row).text());
 			if (!isNaN(taskId)) {
-				$.get(GetTaskDetailsUrl(taskId), function(estData){
+				$.get(GetTaskEstimationsUrl(taskId), function(estData){
 					UpdateRow(row, estData, taskId, statistics);
 					UpdateListStatistics(statistics);
 					$.get(GetTaskTimesheetsUrl(taskId), function(timeData){
@@ -204,7 +210,7 @@ function InitAddTimeAgjustments() {
 					buttonTitle = 'Yesterday';
 					date.setDate(date.getDate() - 1);
 				}
-				$('#ffc-t1-f230', iframe.contents()).append('<input id="reportDateP" type="button" value="' + buttonTitle + '" style="margin-left:10px">');
+				$('#ffc-t1-f230', iframe.contents()).append('<input id="reportDateP" class="est-button-day" type="button" value="' + buttonTitle + '" style="margin: 5px 5px 0 0">');
 				$('#reportDateP', iframe.contents()).click(function() {
 					var dateInput = $('#JS_t1-f230-_new_', iframe.contents());
 					dateInput.val(Pad(date.getDate()) + '-' + Pad(date.getMonth() + 1) + '-' + date.getFullYear());
@@ -212,8 +218,8 @@ function InitAddTimeAgjustments() {
 				});
 				// get estimations
 				var userName = $('#navigation li:last-child a[href="index.php?logout=1"]').text().replace("Logout", "").trim();
-				var taskId = parseInt($('#ffc-t1-refer a.toparentrefer', iframe.contents()).text());
-				$.get(GetTaskDetailsUrl(taskId), function(estData){
+				var taskId = parseInt($('#ffc-t1-f484 a.toparentf484', iframe.contents()).text());
+				$.get(GetTaskEstimationsUrl(taskId), function(estData){
 					var estCount = 0;
 					var estimationItems = $('table.crmclick tbody tr[onclick]', estData);
 					estimationItems.each(function() {
@@ -224,7 +230,7 @@ function InitAddTimeAgjustments() {
 							var remark = $('td:nth-child(7)', this).text();
 							var isDone = $('td:nth-child(5)', this).text().length > 0;
 							var hours = parseFloat($('td:nth-child(4)', this).text().replace(',', '.'));
-							$('#ffc-t1-f231', iframe.contents()).append('<input id="est' + id + '"class="est-button" type="button" value="' + remark + '" style="margin-left:10px">');
+							$('#ffc-t1-f231', iframe.contents()).append('<input id="est' + id + '"class="est-button" type="button" value="' + remark + '" style="margin: 5px 5px 0 0">');
 							$('#est' + id, iframe.contents()).click(function() {
 								var code = 24;
 								if (remark.toLowerCase().indexOf("management") === 0) {
@@ -263,20 +269,20 @@ function InitAddEstimationAgjustments() {
 		$(iframe).load(function() {
 			if ($('#JS_t4-f270-_new_', iframe.contents()).length === 1 && $('input[value="Delete"]', iframe.contents()).length === 0) {
 				var userId = $('#JS_t4-f270-_new_', iframe.contents()).val();
-				
+
 				$('#ffc-t4-f270', iframe.contents()).append(
 					'<div>' +
-						'<input id="estFuncDes" type="button" value="Functional Designs" style="margin-right:5px">' +
-						'<input id="estUIDes" type="button" value="UI Designs" style="margin-right:5px">' +
-						'<input id="estFrDev" type="button" value="Frontend Development" style="margin-right:5px">' +
-						'<input id="estDev" type="button" value="Development" style="margin-right:5px">' +
-						'<input id="estCodeRev" type="button" value="Code Review" style="margin-right:5px">' +
-						'<input id="estLocTest" type="button" value="Local Testing" style="margin-right:5px">' +
-						'<input id="estSandTest" type="button" value="Sandbox Testing" style="margin-right:5px">' +
-						'<input id="estLiveTest" type="button" value="Live Testing" style="margin-right:5px">' +
+						'<input id="estFuncDes" type="button" value="Functional Designs" style="margin: 5px 5px 0 0">' +
+						'<input id="estUIDes" type="button" value="UI Designs" style="margin: 5px 5px 0 0">' +
+						'<input id="estFrDev" type="button" value="Frontend Development" style="margin: 5px 5px 0 0">' +
+						'<input id="estDev" type="button" value="Development" style="margin: 5px 5px 0 0">' +
+						'<input id="estCodeRev" type="button" value="Code Review" style="margin: 5px 5px 0 0">' +
+						'<input id="estLocTest" type="button" value="Local Testing" style="margin: 5px 5px 0 0">' +
+						'<input id="estSandTest" type="button" value="Sandbox Testing" style="margin: 5px 5px 0 0">' +
+						'<input id="estLiveTest" type="button" value="Live Testing" style="margin: 5px 5px 0 0">' +
 					'</div>'
 				);
-				// functional designs				
+				// functional designs
 				$('#estFuncDes', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(userId);
 					$('#JS_t4-f271-_new_', iframe.contents()).val('Functional design');
@@ -284,7 +290,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Functional designs.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(10);
 				});
-				
+
 				// ui designs
 				$('#estUIDes', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(941);
@@ -293,7 +299,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('UI designs.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(15);
 				});
-				
+
 				// frontend development
 				$('#estFrDev', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(513);
@@ -302,7 +308,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Frontend development.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(20);
 				});
-				
+
 				// development
 				$('#estDev', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(userId).focus();
@@ -312,7 +318,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Development.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(30);
 				});
-				
+
 				// code review
 				$('#estCodeRev', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(userId);
@@ -321,7 +327,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Code review.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(35);
 				});
-				
+
 				// local testing
 				$('#estLocTest', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
@@ -330,7 +336,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Local testing.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(40);
 				});
-				
+
 				// sandbox testing
 				$('#estSandTest', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
@@ -339,7 +345,7 @@ function InitAddEstimationAgjustments() {
 					$('#JS_t4-f275-_new_', iframe.contents()).val('Sandbox testing.');
 					$('#JS_t4-f276-_new_', iframe.contents()).val(45);
 				});
-				
+
 				// live testing
 				$('#estLiveTest', iframe.contents()).click(function() {
 					$('#JS_t4-f270-_new_', iframe.contents()).val(944);
@@ -361,21 +367,21 @@ function InitTaskNumberTrim() {
 }
 
 function InitAddTaskAdjustments() {
-	if ($('#navigation a.active[href="record.php?new&table=entity"]').length === 1) {
+	if ($('#navigation a.active[href="record.php?new&table=t22"]').length === 1) {
 		// left values
-		$('#JS_entity-CRMcustomer-_new_').val(577);
-		$('#JS_entity-status-_new_').val('2. Toegewezen');
-		$('#JS_entity-f237-_new_').val('3 Wijziging');
-		$('#JS_entity-f227-_new_').val('3. Medium');
-		// project
-		var project = $('#JS_entity-f2-_new_');
+		$('#JS_t22-f382-_new_').val(577); // Customer
+		$('#JS_t22-f380-_new_').val('2. Toegewezen');
+		$('#JS_t22-f419-_new_').val('3 Wijziging');
+		$('#JS_t22-f418-_new_').val('3. Medium');
+		// Module
+		var project = $('#JS_t22-f388-_new_');
 		project.width(94);
 		project.after(
-			'<input id="projCW" type="button" value="C" style="margin-left:10px">' + 
-			'<input id="projR" type="button" value="R" style="margin-left:5px">' +
-            '<input id="projH" type="button" value="H" style="margin-left:5px">' +
-            '<input id="projS" type="button" value="S" style="margin-left:5px">' +
-			'<input id="projT" type="button" value="T" style="margin-left:5px">'
+			'<input id="projCW" type="button" value="C" class="mod-button">' + 
+			'<input id="projR" type="button" value="R" class="mod-button">' +
+			'<input id="projH" type="button" value="H" class="mod-button">' +
+			'<input id="projS" type="button" value="S" class="mod-button">' +
+			'<input id="projT" type="button" value="T" class="mod-button">'
 		);
 		$('#projCW').click(function() {
 			project.val(9);
@@ -383,22 +389,22 @@ function InitAddTaskAdjustments() {
 		$('#projR').click(function() {
 			project.val(152);
 		});
-        $('#projH').click(function() {
+		$('#projH').click(function() {
 			project.val(158);
 		});
-        $('#projS').click(function() {
+		$('#projS').click(function() {
 			project.val(155);
 		});
 		$('#projT').click(function() {
 			project.val(100);
 		});
-		// one more value
-		$('#JS_entity-f5-_new_').val(82);
+		// Tab
+		$('#JS_t22-f391-_new_').val(82);
 		// define scripts
 		var devDate, testDate, liveDate, devValue, testValue, liveValue;
 		var currentDate = new Date();
-		$('#JS_entity-f4-_new_ option').each(function(){			
-			var tDate = $(this).text().match(/T \d{2}-\d{2}/);
+		$('#JS_t22-f390-_new_ option').each(function() {
+			var tDate = $(this).text().match(/S \d{2}-\d{2}/);
 			if (tDate != null)
 				tDate = new Date(DateFormat(tDate.toString().slice(2)));
 			var lDate = $(this).text().match(/L \d{2}-\d{2}/);
@@ -419,17 +425,19 @@ function InitAddTaskAdjustments() {
 				}
 			}
 		});
-		 console.debug('DEV : ' + $(devValue).text());
-		 console.debug('TEST: ' + $(testValue).text());
-		 console.debug('LIVE: ' + $(liveValue).text());		
-		// sprints
-		var sprint = $('#JS_entity-f4-_new_');
+		if (isIHelperDebugMode) {
+			console.debug('DEV : ' + $(devValue).text());
+			console.debug('TEST: ' + $(testValue).text());
+			console.debug('LIVE: ' + $(liveValue).text());
+		}		
+		// Sprints
+		var sprint = $('#JS_t22-f390-_new_');
 		sprint.parent().after(
-			'<div class="newtask-sprints">' +
-			'<input id="spDev" type="button" value="Dev">' +
-			'<input id="spTest" type="button" value="Test">' +
-			'<input id="spLive" type="button" value="Live">' +
-			'<input id="spBacklog" type="button" value="Backlog">' +
+			'<div>' +
+			'<input id="spDev" type="button" class="spr-button" value="Dev">' +
+			'<input id="spTest" type="button" class="spr-button" value="Test">' +
+			'<input id="spLive" type="button" class="spr-button" value="Live">' +
+			'<input id="spBacklog" type="button" class="spr-button" value="Backlog">' +
 			'</div>'
 		);
 		$('#spLive').click(function() {
@@ -444,8 +452,8 @@ function InitAddTaskAdjustments() {
 		$('#spBacklog').click(function() {
 			sprint.val(130);
 		});
-		//project
-		$('#JS_entity-f3-_new_').val(53);
+		// Project
+		$('#JS_t22-f389-_new_').val(53);
 	}
 }
 
@@ -456,12 +464,15 @@ function InitPageAction() {
 function InitChristmas() {
 	var daysToNewYear = GetDaysToNewYear();
 	if (daysToNewYear <= 14) {
-		$("#navigation li.empty")
+		$("#navigation li:first-child a.nohighlight")
+			.parent()
 			.css("position", "relative")
 			.append("<div id='christmas-hat'></div>");
 		$("#christmas-hat").fadeIn(500);
 	}
 }
+
+var isIHelperDebugMode = true;
 
 $(document).ready(function() {
 	InitPageAction();
